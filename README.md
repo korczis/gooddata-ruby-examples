@@ -74,4 +74,4 @@ Original authors in alphabetical order.
 ## License
 
 Project gooddata-ruby-examples is released under the [MIT License](http://www.opensource.org/licenses/MIT).
->>>>>>> korczis/master
+
