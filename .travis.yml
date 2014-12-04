@@ -1,12 +1,13 @@
 language: ruby
 
+
 rvm:
   - 1.9.3
-  - ruby-head
   - jruby-19mode
+  - 2.1
 
 before_install:
   - gem update --system
   - gem update bundler
 
-script: echo "Done"
+script: rake ci

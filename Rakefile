@@ -1,62 +1,38 @@
+# encoding: UTF-8
+
 require 'rubygems'
-
 require 'bundler/setup'
-require 'rake/notes/rake_task'
-require 'rspec/core/rake_task'
-require 'yard'
 
-desc 'Run continuous integration test'
+require_relative './lib/erb_helper'
+
+desc 'Build book'
+task :build do
+  Rake::Task['erb'].invoke
+  system 'asciidoctor -d book book.asciidoc'
+end
+
+desc 'Run continuous integration'
 task :ci do
-  # Run unit tests
-  Rake::Task['test:unit'].invoke
-
-  # Run integration test when not PR
-  unless ENV['TRAVIS'] == 'true' && ENV['TRAVIS_SECURE_ENV_VARS'] == 'false'
-    Rake::Task['test:integration'].invoke
-  end
-
-  # Run Rubocop to make sure all code comply with ruby style guid
-  Rake::Task['test:cop'].invoke if RUBY_VERSION.start_with?('2.2') == false
-
-  # Rake::Task['coveralls:push'].invoke
-
-  # Generate doc using 'yard'
-  Rake::Task['yard'].invoke
+  Rake::Task['build'].invoke
 end
 
-desc 'Run Rubocop'
-task :cop do
-  exec 'rubocop Gemfile snippets/'
+desc 'Clean generated stuff'
+task :clean do
+  ErbHelper.new.clean
 end
 
-RSpec::Core::RakeTask.new(:test)
-
-namespace :test do
-  desc 'Run unit tests'
-  RSpec::Core::RakeTask.new(:unit) do |t|
-    t.pattern = 'spec/unit/**/*.rb'
-  end
-
-  desc 'Run integration tests'
-  RSpec::Core::RakeTask.new(:integration) do |t|
-    t.pattern = 'spec/integration/**/*.rb'
-  end
-
-  desc 'Run coding style tests'
-  RSpec::Core::RakeTask.new(:cop) do |t|
-    Rake::Task['cop'].invoke
-  end
-
-  task :all => [:unit, :integration]
+task 'Run ERB preprocessing'
+task :erb do
+  ErbHelper.new.run
 end
-
-desc 'Run all tests'
-task :test => 'test:all'
 
 task :usage do
   puts 'No rake task specified, use rake -T to list them'
 end
 
-YARD::Rake::YardocTask.new
+desc 'Run watcher for automatic building'
+task :watch do
+  system 'watchr script/build.rb'
+end
 
 task :default => [:usage]

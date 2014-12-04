@@ -1,17 +1,10 @@
-# encoding: utf-8
-
-# A sample Gemfile
 source 'https://rubygems.org'
 
-gem 'gooddata', git: 'https://github.com/gooddata/gooddata-ruby.git'
+gem 'gooddata', :git => 'https://github.com/gooddata/gooddata-ruby.git', :branch => 'master'
+gem 'activesupport', '~> 4.1', '>= 4.1.4'
+gem 'asciidoctor', '~> 1.5', '>= 1.5.0'
+gem 'rake', '~> 10.3', '>= 10.3.2'
+gem 'watchr', '~> 0.7'
 
-group :development, :test do
-  gem 'rake-notes'
-  gem 'redcarpet' if RUBY_PLATFORM != 'java'
-  gem 'rspec'
-  gem 'rubocop'
-  # gem 'ruby-debug-base19x'
-  # gem 'ruby-debug-ide'
-  gem 'yard'
-  gem 'yard-rspec'
-end
+gem 'debase' if RUBY_VERSION >= '2.1'
+gem 'ruby-debug-ide' if RUBY_VERSION >= '2.1'
